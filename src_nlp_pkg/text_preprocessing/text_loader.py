@@ -1,17 +1,29 @@
-from common_nlp_settings import TRASH_SYMBOLS
+from settings_nlp_pkg.common_nlp_settings import TRASH_SYMBOLS
 
 
 class TextLoader:
     @staticmethod
     def remove_trash_symbols(line):
-        # TODO: add docstring
+        """Удаляет из строки "мусор" - специальные и ненужные символы
+
+        :param line: исходный текст
+        :type line: str
+        :return: текст без мусорных символов
+        :rtype: [str]
+        """
         for symbol in TRASH_SYMBOLS:
             line = line.replace(symbol, '')
         return line
 
     @staticmethod
     def load(path):
-        # TODO: add docstring
+        """Загружает файл по указанному адресу, разбивает на предложения и возвращает список предложений
+
+        :param path: путь к загружаемому файлу
+        :type path: str
+        :return: список, содержащий предложения, загруженные из указанного файла
+        :rtype: [list]
+        """
         if not isinstance(path, str):
             raise ValueError('Path must be a string with path to file')
         extension = path.split('.')[-1]
