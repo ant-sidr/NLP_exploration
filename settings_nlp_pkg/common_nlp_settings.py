@@ -1,3 +1,5 @@
+TRASH_SYMBOLS = ["\n"]
+
 ENG_STOP_WORDS = [
     'is', 'a', 'who', 'will', 'be'
 ]

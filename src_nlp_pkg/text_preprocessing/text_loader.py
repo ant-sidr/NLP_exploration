@@ -1,9 +1,28 @@
+from common_nlp_settings import TRASH_SYMBOLS
 
 
 class TextLoader:
-    def __init__(self):
-        raise NotImplementedError('Under construction')
+    @staticmethod
+    def remove_trash_symbols(line):
+        # TODO: add docstring
+        for symbol in TRASH_SYMBOLS:
+            line = line.replace(symbol, '')
+        return line
 
     @staticmethod
     def load(path):
-        raise NotImplementedError('Under construction')
+        # TODO: add docstring
+        if not isinstance(path, str):
+            raise ValueError('Path must be a string with path to file')
+        extension = path.split('.')[-1]
+        if extension == 'txt':
+            file = open(path, 'r', encoding='utf-8').read()  # todo: auto-check encoding
+            lines = [TextLoader.remove_trash_symbols(l.strip()) for l in file.split('.')]
+            lines = [l for l in lines if len(l) > 0]
+            return lines
+        elif extension == 'pdf':
+            raise NotImplementedError('Under construction')
+        elif extension in ['doc', 'docx']:
+            raise NotImplementedError('Under construction')
+        else:
+            raise ValueError("Can't handle non pdf, txt, doc or docx file")
