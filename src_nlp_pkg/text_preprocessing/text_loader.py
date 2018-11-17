@@ -1,5 +1,10 @@
 import zipfile
 from xml.etree.cElementTree import XML
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+from pdfminer.converter import TextConverter
+from pdfminer.layout import LAParams
+from pdfminer.pdfpage import PDFPage
+from io import StringIO
 
 from settings_nlp_pkg.common_nlp_settings import TRASH_SYMBOLS
 
@@ -61,7 +66,32 @@ class TextLoader:
 
     @staticmethod
     def __load_pdf(path):
-        raise NotImplementedError('Under construction')
+        # TODO: add comments and docstring
+        rsrcmgr = PDFResourceManager()
+        retstr = StringIO()
+        codec = 'utf-8'
+        laparams = LAParams()
+        device = TextConverter(rsrcmgr, retstr, codec=codec, laparams=laparams)
+        fp = open(path, 'rb')
+        interpreter = PDFPageInterpreter(rsrcmgr, device)
+        password = ""
+        maxpages = 0
+        caching = True
+        pagenos = set()
+
+        for page in PDFPage.get_pages(fp, pagenos, maxpages=maxpages, password=password, caching=caching,
+                                      check_extractable=True):
+            interpreter.process_page(page)
+
+        text = retstr.getvalue()
+
+        fp.close()
+        device.close()
+        retstr.close()
+
+        lines = [TextLoader.remove_trash_symbols(l.strip()) for l in text.split('.')]
+        lines = [l for l in lines if len(l) > 0]
+        return lines
 
     @staticmethod
     def load(path):
