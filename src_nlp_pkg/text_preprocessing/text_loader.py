@@ -65,22 +65,16 @@ class TextLoader:
         return lines
 
     @staticmethod
-    def __load_pdf(path):
+    def __load_pdf(path, codec='utf-8'):
         # TODO: add comments and docstring
+        fp = open(path, 'rb')
+
         rsrcmgr = PDFResourceManager()
         retstr = StringIO()
-        codec = 'utf-8'
-        laparams = LAParams()
-        device = TextConverter(rsrcmgr, retstr, codec=codec, laparams=laparams)
-        fp = open(path, 'rb')
+        device = TextConverter(rsrcmgr, retstr, codec=codec, laparams=LAParams())
         interpreter = PDFPageInterpreter(rsrcmgr, device)
-        password = ""
-        maxpages = 0
-        caching = True
-        pagenos = set()
 
-        for page in PDFPage.get_pages(fp, pagenos, maxpages=maxpages, password=password, caching=caching,
-                                      check_extractable=True):
+        for page in PDFPage.get_pages(fp):
             interpreter.process_page(page)
 
         text = retstr.getvalue()
