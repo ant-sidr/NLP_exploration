@@ -5,6 +5,7 @@ from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 from io import StringIO
+from bs4 import UnicodeDammit
 
 from settings_nlp_pkg.common_nlp_settings import TRASH_SYMBOLS
 
@@ -26,7 +27,9 @@ class TextLoader:
     @staticmethod
     def __load_txt(path):
         """Загружает текстовые строки из файла txt"""
-        file = open(path, 'r', encoding='utf-8').read()  # todo: auto-check encoding
+        file = open(path, 'rb').read()
+        ud = UnicodeDammit(file)  # TODO: implement unit tests
+        file = ud.unicode_markup
         lines = [TextLoader.remove_trash_symbols(l.strip()) for l in file.split('.')]
         lines = [l for l in lines if len(l) > 0]
         return lines
